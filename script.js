@@ -22,30 +22,44 @@ let iterations = 0;
 let scriptRan = false;
 
 const trigger = () => {
-    if(!scriptRan) {}
-    delegate(document, 'mouseover', 'h1', (event) => {
-        console.log('>>> log 1')
-        const interval = setInterval(() => {
-            event.target.innerText = event.target.innerText.split('')
-                .map((letter, index) => {
-                    if(index < iterations) {
-                        return event.target.dataset.value[index];
-                    }
-                    return letters[Math.floor(Math.random() * 26)]
-                })
-                .join("");
+    if(!scriptRan) {
+        console.log('>>> scriptRan(1):')
+        console.log(scriptRan)
 
-            if(iterations >= event.target.dataset.value.length) clearInterval(interval)
-            iterations += 1 / 3;
-        }, 30)
+        delegate(document, 'mouseover', 'h1', (event) => {
+            console.log('>>> log 1')
+            const interval = setInterval(() => {
+                event.target.innerText = event.target.innerText.split('')
+                    .map((letter, index) => {
+                        if(index < iterations) {
+                            return event.target.dataset.value[index];
+                        }
+                        return letters[Math.floor(Math.random() * 26)]
+                    })
+                    .join("");
 
-        /* for testing */
-        delegate(document, 'click', 'button', () => {
-            clearInterval(interval);
-            document.querySelector('#stopConfirmation').style.visibility = 'visible';
+                if(iterations >= event.target.dataset.value.length) {
+                    clearInterval(interval)
+                    scriptRan = true;
+                }
+                iterations += 1 / 3;
+            }, 30)
+
+            /* for testing */
+            delegate(document, 'click', 'button', () => {
+                clearInterval(interval);
+                document.querySelector('#stopConfirmation').style.visibility = 'visible';
+            })
+            console.log('>>> scriptRan(2):')
+            console.log(scriptRan)
         })
-    })
+    }
 }
+
 trigger();
 
+console.log('>>> scriptRan(3):')
+console.log(scriptRan)
+
+// needs to re-trigger
 delegate(document, 'mouseleave', 'h1', trigger)
