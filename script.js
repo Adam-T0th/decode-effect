@@ -17,23 +17,23 @@ var delegate = (function(){
 }());
 
 // ABCDEFGHIJKLMNOPRSQTUVWXYZ
-const letters = 'abcdefghijklmnoprstquvwxyz'
+const decodeLetters = 'abcdefghijklmnoprstquvwxyz'
 
 
 const trigger = () => {
     let iterations = 0
-    delegate(document, 'mouseover', 'h1', (event) => {
+    delegate(document, 'mouseover', 'h1', (e) => {
         const interval = setInterval(() => {
-            event.target.innerText = event.target.innerText.split('')
+            e.target.innerText = e.target.innerText.split('')
                 .map((letter, index) => {
                     if(index < iterations) {
-                        return event.target.dataset.value[index];
+                        return e.target.dataset.value[index];
                     }
-                    return letters[Math.floor(Math.random() * 26)]
+                    return decodeLetters[Math.floor(Math.random() * 26)]
                 })
                 .join("")
 
-            if(iterations >= event.target.dataset.value.length) {
+            if(iterations >= e.target.dataset.value.length) {
                 clearInterval(interval)
             }
             iterations += 1 / 3
