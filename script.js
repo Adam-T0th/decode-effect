@@ -19,10 +19,10 @@ var delegate = (function(){
 // ABCDEFGHIJKLMNOPRSQTUVWXYZ
 const decodeLetters = 'abcdefghijklmnoprstquvwxyz'
 
-
 const trigger = () => {
     let iterations = 0
     delegate(document, 'mouseover', 'h1', (e) => {
+        triggerOnAnchor()
         const interval = setInterval(() => {
             e.target.innerText = e.target.innerText.split('')
                 .map((letter, index) => {
@@ -42,6 +42,7 @@ const trigger = () => {
         /* failsafe; in case interval runs erroneously */
         delegate(document, 'click', 'button', () => {
             clearInterval(interval)
+            // clearInterval(intervalOnLink)
             document.querySelector('#stopConfirmation').style.visibility = 'visible'
         })
     })
@@ -49,6 +50,34 @@ const trigger = () => {
 trigger()
 
 delegate(document, 'mouseout', 'h1', () => {
-    // iterations = 0;
     trigger()
 })
+
+
+/**
+ * create same decoding effect for the anchor referencing the icon's creator
+ * have it hidden by default and reveal as the main text gets revealed
+ */
+// #referencingAnchor
+const triggerOnAnchor = () => {
+    const refLink = document.querySelector('#referencingAnchor')
+    let iterations = 0
+    // when user hovers over h1
+    const intervalOnLink = setInterval(() => {
+        refLink.innerText = refLink.innerText.split('')
+            .map((letter, index) => {
+                if(index < iterations) {
+                    return refLink.dataset.value[index]
+                }
+                return decodeLetters[Math.floor(Math.random() * 26)]
+            })
+            .join("")
+        console.log('>>> refLink.innerText')
+        console.log(refLink.innerText)
+
+        if(iterations >= refLink.dataset.value.length) {
+            clearInterval(intervalOnLink)
+        }
+        iterations += 1 / 3
+    }, 30)
+}
