@@ -17,42 +17,38 @@ var delegate = (function(){
 }());
 
 // ABCDEFGHIJKLMNOPRSQTUVWXYZ
-const letters = 'abcdefghijklmnoprstquvwxyz';
-let iterations = 0;
+const letters = 'abcdefghijklmnoprstquvwxyz'
+
 
 const trigger = () => {
+    let iterations = 0
+    delegate(document, 'mouseover', 'h1', (event) => {
+        const interval = setInterval(() => {
+            event.target.innerText = event.target.innerText.split('')
+                .map((letter, index) => {
+                    if(index < iterations) {
+                        return event.target.dataset.value[index];
+                    }
+                    return letters[Math.floor(Math.random() * 26)]
+                })
+                .join("")
 
-        delegate(document, 'mouseover', 'h1', (event) => {
-            console.log('>>> log 1')
-            const interval = setInterval(() => {
-                event.target.innerText = event.target.innerText.split('')
-                    .map((letter, index) => {
-                        if(index < iterations) {
-                            return event.target.dataset.value[index];
-                        }
-                        return letters[Math.floor(Math.random() * 26)]
-                    })
-                    .join("");
+            if(iterations >= event.target.dataset.value.length) {
+                clearInterval(interval)
+            }
+            iterations += 1 / 3
+        }, 30)
 
-                if(iterations >= event.target.dataset.value.length) {
-                    clearInterval(interval)
-                }
-                iterations += 1 / 3;
-            }, 30)
-
-            /* for testing */
-            delegate(document, 'click', 'button', () => {
-                clearInterval(interval);
-                document.querySelector('#stopConfirmation').style.visibility = 'visible';
-            })
+        /* failsafe; in case interval runs erroneously */
+        delegate(document, 'click', 'button', () => {
+            clearInterval(interval)
+            document.querySelector('#stopConfirmation').style.visibility = 'visible'
         })
+    })
 }
+trigger()
 
-trigger();
-
-
-// needs to re-trigger
 delegate(document, 'mouseout', 'h1', () => {
-    iterations = 0;
+    // iterations = 0;
     trigger()
 })
