@@ -19,12 +19,8 @@ var delegate = (function(){
 // ABCDEFGHIJKLMNOPRSQTUVWXYZ
 const letters = 'abcdefghijklmnoprstquvwxyz';
 let iterations = 0;
-let scriptRan = false;
 
 const trigger = () => {
-    if(!scriptRan) {
-        console.log('>>> scriptRan(1):')
-        console.log(scriptRan)
 
         delegate(document, 'mouseover', 'h1', (event) => {
             console.log('>>> log 1')
@@ -40,7 +36,6 @@ const trigger = () => {
 
                 if(iterations >= event.target.dataset.value.length) {
                     clearInterval(interval)
-                    scriptRan = true;
                 }
                 iterations += 1 / 3;
             }, 30)
@@ -50,16 +45,14 @@ const trigger = () => {
                 clearInterval(interval);
                 document.querySelector('#stopConfirmation').style.visibility = 'visible';
             })
-            console.log('>>> scriptRan(2):')
-            console.log(scriptRan)
         })
-    }
 }
 
 trigger();
 
-console.log('>>> scriptRan(3):')
-console.log(scriptRan)
 
 // needs to re-trigger
-delegate(document, 'mouseleave', 'h1', trigger)
+delegate(document, 'mouseout', 'h1', () => {
+    iterations = 0;
+    trigger()
+})
